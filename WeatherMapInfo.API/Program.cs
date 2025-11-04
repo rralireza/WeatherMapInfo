@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configuration();
 
+builder.Configuration.AddUserSecrets<Program>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Net.Http.Json;
 using WeatherMapInfo.Domain.ApiInterfaces;
 using WeatherMapInfo.Domain.Entities;
@@ -26,17 +27,17 @@ public sealed class WeatherMapApiService : IWeatherMapApiService
         var openWeatherApiKey = _configuration["OpenWeather:ApiKey"];
 
 
-        var geocodingUrl = $"{_configuration["Geocoding:BaseUrl"]}direct?q={city}&limit=''&appid={_configuration["Geocoding:ApiKey"]}";
+        var geocodingUrl = $"{_configuration["Geocoding:BaseUrl"]}direct?q={city}&appid={_configuration["Geocoding:ApiKey"]}";
         var geocodingDetails = await _httpClient.GetFromJsonAsync<List<GeoCodingResponse>>(geocodingUrl);
 
         var lat = geocodingDetails[0].Lat;
         var lon = geocodingDetails[0].Lon;
         var geoCity = geocodingDetails[0].City;
 
-        var weatherUrl = $"{_configuration["OpenWeather:BaseUrl"]}onecall?lat={lat}&lon={lon}&units=metric&exclude=minutely,daily,alerts&appid={_configuration["OpenWeather:ApiKey"]}";
-        var weatherDetails = await _httpClient.GetFromJsonAsync<OneCallResponse>(weatherUrl);
+        var weatherUrl = $"{_configuration["OpenWeather:BaseUrl"]}weather?q={city}&appid={_configuration["OpenWeather:ApiKey"]}";
+        var weatherDetails = await _httpClient.GetFromJsonAsync<WeatherResponse>(weatherUrl);
 
-        var airUrl = $"{_configuration["AirPollution:BaseUrl"]}air_pollution?lat={lat}&lon={lon}&appid={_configuration["AirPollution:ApiKey"]}"
+        var airUrl = $"{_configuration["AirPollution:BaseUrl"]}air_pollution?lat={lat}&lon={lon}&appid={_configuration["AirPollution:ApiKey"]}";
         var airDetails = await _httpClient.GetFromJsonAsync<AirPollutionResponse>(airUrl);
 
         CityWeather cityWeatherData = new()
@@ -46,10 +47,10 @@ public sealed class WeatherMapApiService : IWeatherMapApiService
             Lon = lon,
             Current = new()
             {
-                Temperature = weatherDetails.Current.Temp,
-                Humidity = weatherDetails.Current.Humidity,
-                WindSpeed = weatherDetails.Current.WindSpeed,
-                Description = weatherDetails.Current.Weather[0].Description
+                Temperature = weatherDetails.Main.Temp,
+                Humidity = weatherDetails.Main.Humidity,
+                WindSpeed = weatherDetails.Wind.Speed,
+                Description = weatherDetails.Weather.FirstOrDefault()?.Description ?? "..."
             },
             AirPollution = new()
             {

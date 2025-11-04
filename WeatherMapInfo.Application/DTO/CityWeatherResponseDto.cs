@@ -12,9 +12,11 @@ public sealed class CityWeatherResponseDto
 
     public int AQI { get; set; }
 
-    public double Latitude { get; set; }
+    //public double Latitude { get; set; }
 
-    public double Longitude { get; set; }
+    //public double Longitude { get; set; }
+
+    public Dictionary<string, double> GeographicalCoordinates { get; set; }
 
     public Dictionary<string, double> MajorPollutants { get; set; }
 }

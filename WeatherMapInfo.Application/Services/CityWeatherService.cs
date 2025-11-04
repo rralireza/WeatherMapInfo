@@ -1,9 +1,10 @@
 ﻿using WeatherMapInfo.Application.DTO;
+using WeatherMapInfo.Application.Interfaces;
 using WeatherMapInfo.Domain.ApiInterfaces;
 
 namespace WeatherMapInfo.Application.Services;
 
-public sealed class CityWeatherService
+public sealed class CityWeatherService : ICityWeatherService
 {
     private readonly IWeatherMapApiService _service;
 
@@ -18,14 +19,16 @@ public sealed class CityWeatherService
 
         CityWeatherResponseDto result = new()
         {
-            City = data.City,
-            Latitude = data.Lat,
-            Longitude = data.Lon,
             Temperature = data.Current.Temperature,
             Humidity = data.Current.Humidity,
             WindSpeed = data.Current.WindSpeed,
             AQI = data.AirPollution.AQI,
-            MajorPollutants = data.AirPollution.Pollutants
+            MajorPollutants = data.AirPollution.Pollutants,
+            GeographicalCoordinates = new()
+            {
+                ["Latitude"] = data.Lat,
+                ["Longitude"] = data.Lon
+            },
         };
 
         return result;

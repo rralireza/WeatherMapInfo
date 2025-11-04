@@ -21,12 +21,6 @@ public sealed class WeatherMapApiService : IWeatherMapApiService
 
     public async Task<CityWeather> GetCityWeatherAsync(string city)
     {
-        //var geoBaseUrl = 
-        var geoApiKey = _configuration["Geocoding:ApiKey"];
-        var openWeatherBaseUrl = _configuration["OpenWeather:BaseUrl"];
-        var openWeatherApiKey = _configuration["OpenWeather:ApiKey"];
-
-
         var geocodingUrl = $"{_configuration["Geocoding:BaseUrl"]}direct?q={city}&appid={_configuration["Geocoding:ApiKey"]}";
         var geocodingDetails = await _httpClient.GetFromJsonAsync<List<GeoCodingResponse>>(geocodingUrl);
 

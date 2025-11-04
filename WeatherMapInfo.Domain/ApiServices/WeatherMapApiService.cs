@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
+using WeatherMapInfo.Domain.ApiInterfaces;
 using WeatherMapInfo.Domain.Entities;
 using WeatherMapInfo.Domain.ResponseModels;
 
 namespace WeatherMapInfo.Domain.ApiServices;
 
-public sealed class WeathMapApiService
+public sealed class WeatherMapApiService : IWeatherMapApiService
 {
     private readonly HttpClient _httpClient;
 
     private readonly IConfiguration _configuration;
 
-    public WeathMapApiService(HttpClient httpClient, IConfiguration configuration)
+    public WeatherMapApiService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _configuration = configuration;
@@ -61,5 +62,7 @@ public sealed class WeathMapApiService
                 }
             }
         };
+
+        return cityWeatherData;
     }
 }
